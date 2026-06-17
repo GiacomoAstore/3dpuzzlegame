@@ -41,24 +41,22 @@ export class Player {
         this.#fpsCamera.parent = this.#mesh;
         this.#fpsCamera.minZ = 0.1;
 
-        // Disable rotation via mouse as it's handled when pointer is locked.
-        // Wait, attaching control handles it by default, but we should make sure camera is active
-        this.#fpsCamera.attachControl(this.#scene.getEngine().getRenderingCanvas(), true);
-        this.#fpsCamera.checkCollisions = true;
-        this.#fpsCamera.applyGravity = true;
-        this.#fpsCamera.ellipsoid = new Vector3(PLAYER_SETTINGS.RADIUS, PLAYER_SETTINGS.HEIGHT / 2, PLAYER_SETTINGS.RADIUS);
-        this.#fpsCamera.speed = PLAYER_SETTINGS.SPEED / 10;
+        // Disable default movement keys on camera to handle it manually with moveWithCollisions
+        this.#fpsCamera.keysUp = [];
+        this.#fpsCamera.keysDown = [];
+        this.#fpsCamera.keysLeft = [];
+        this.#fpsCamera.keysRight = [];
 
-        // Key bindings for WASD
-        this.#fpsCamera.keysUp.push(87);    // W
-        this.#fpsCamera.keysDown.push(83);  // S
-        this.#fpsCamera.keysLeft.push(65);  // A
-        this.#fpsCamera.keysRight.push(68); // D
+        this.#fpsCamera.attachControl(this.#scene.getEngine().getRenderingCanvas(), true);
+        this.#fpsCamera.checkCollisions = false; // The mesh handles collisions
 
         // TPS Camera
         this.#tpsCamera = new ArcRotateCamera("tpsCamera", -Math.PI / 2, Math.PI / 2.5, 5, this.#mesh.position, this.#scene);
         this.#tpsCamera.setTarget(this.#mesh);
         this.#tpsCamera.checkCollisions = true;
+        this.#tpsCamera.minZ = 0.1;
+        this.#tpsCamera.maxZ = 1000;
+        this.#fpsCamera.maxZ = 1000;
 
         this.#scene.activeCamera = this.#fpsCamera;
 
@@ -91,13 +89,53 @@ export class Player {
     update(deltaTime) {
         if (!this.#inputManager.isPointerLocked) return;
 
-        // Sync mesh rotation to camera in FPS mode
+        // Determine movement direction based on active camera
+        let forward, right;
+
         if (this.#isFirstPerson) {
             this.#mesh.rotation.y = this.#fpsCamera.rotation.y;
+            forward = this.#fpsCamera.getDirection(Vector3.Forward());
+            right = this.#fpsCamera.getDirection(Vector3.Right());
         } else {
-            // Basic movement handling for TPS could go here
-            // For now, Babylon's ArcRotateCamera handles rotation around target
+            forward = this.#tpsCamera.getDirection(Vector3.Forward());
+            right = this.#tpsCamera.getDirection(Vector3.Right());
+            // In TPS, forward direction usually ignores Y pitch
+            forward.y = 0;
+            right.y = 0;
+            forward.normalize();
+            right.normalize();
         }
+
+        let moveDirection = Vector3.Zero();
+
+        if (this.#inputManager.isKeyDown('KeyW')) {
+            moveDirection.addInPlace(forward);
+        }
+        if (this.#inputManager.isKeyDown('KeyS')) {
+            moveDirection.subtractInPlace(forward);
+        }
+        if (this.#inputManager.isKeyDown('KeyA')) {
+            moveDirection.subtractInPlace(right);
+        }
+        if (this.#inputManager.isKeyDown('KeyD')) {
+            moveDirection.addInPlace(right);
+        }
+
+        if (moveDirection.length() > 0) {
+            moveDirection.normalize();
+
+            // Only rotate mesh to match movement in TPS
+            if (!this.#isFirstPerson) {
+                const targetRotation = Math.atan2(moveDirection.x, moveDirection.z);
+                this.#mesh.rotation.y = targetRotation;
+            }
+        }
+
+        // Apply speed, delta time, and simple gravity
+        const velocity = moveDirection.scale(PLAYER_SETTINGS.SPEED * deltaTime);
+        velocity.y = -9.81 * deltaTime; // Simple gravity
+
+        this.#mesh.moveWithCollisions(velocity);
 
         this.#checkInteractions();
     }

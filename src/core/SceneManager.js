@@ -31,6 +31,7 @@ export class SceneManager {
 
         const scene = new Scene(this.#engine);
         scene.clearColor = new Color4(0.05, 0.05, 0.05, 1);
+        scene.collisionsEnabled = true;
 
         // Basic ambient light
         const light = new HemisphericLight("ambientLight", new Vector3(0, 1, 0), scene);
@@ -40,6 +41,8 @@ export class SceneManager {
         // Persistent ambient camera (needed so scene can render even before player is created)
         this.#ambientCamera = new FreeCamera("ambientCamera", new Vector3(0, 5, -10), scene);
         this.#ambientCamera.setTarget(Vector3.Zero());
+        this.#ambientCamera.minZ = 0.1;
+        this.#ambientCamera.maxZ = 1000;
 
         // Make this the active camera initially
         scene.activeCamera = this.#ambientCamera;
