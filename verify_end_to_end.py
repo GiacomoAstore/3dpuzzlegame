@@ -1,0 +1,24 @@
+import asyncio
+from playwright.async_api import async_playwright
+
+async def run():
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+
+        page.on("console", lambda msg: print(f"Browser console: {msg.text}"))
+
+        await page.goto("http://localhost:3000")
+        await page.wait_for_timeout(2000)
+
+        print("Clicking to start game...")
+        await page.click("button#btn-start")
+        await page.wait_for_timeout(2000)
+
+        print("Taking final check screenshot...")
+        await page.screenshot(path="verify_end_to_end.png")
+
+        await browser.close()
+
+if __name__ == "__main__":
+    asyncio.run(run())

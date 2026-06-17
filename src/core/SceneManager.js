@@ -3,7 +3,7 @@
  * @description Manages Babylon.js scenes.
  */
 
-import { Scene, Color3, Color4, HemisphericLight, Vector3, FreeCamera } from '@babylonjs/core';
+import { Scene, Color3, Color4, HemisphericLight, Vector3, FreeCamera, GlowLayer } from '@babylonjs/core';
 
 export class SceneManager {
     /** @type {import('@babylonjs/core').Engine} */
@@ -46,6 +46,10 @@ export class SceneManager {
 
         // Make this the active camera initially
         scene.activeCamera = this.#ambientCamera;
+
+        // Add GlowLayer for visual feedback on active elements
+        const glowLayer = new GlowLayer("glow", scene);
+        glowLayer.intensity = 0.4;
 
         this.#currentScene = scene;
         return scene;

@@ -58,16 +58,24 @@ export class PuzzleBlock {
 
     #checkTarget(scene, eventBus) {
         const targetMesh = scene.getMeshByName(this.targetId);
-        if (targetMesh && Vector3.Distance(this.mesh.position, targetMesh.position) < 0.5) {
-            this.isPlaced = true;
-            this.mesh.position = targetMesh.position.clone();
-            this.mesh.position.y += 0.5; // Sit on top of target
+        // We only care about X and Z for distance since Y might be slightly different
+        if (targetMesh) {
+            const dx = this.mesh.position.x - targetMesh.position.x;
+            const dz = this.mesh.position.z - targetMesh.position.z;
+            const dist = Math.sqrt(dx * dx + dz * dz);
 
-            // Visual feedback
-            this.mesh.material.emissiveColor = this.#getColorValue(this.color);
-            this.mesh.metadata.interactable = false;
+            if (dist < 0.8) { // Slightly more forgiving threshold
+                this.isPlaced = true;
+                this.mesh.position.x = targetMesh.position.x;
+                this.mesh.position.z = targetMesh.position.z;
+                this.mesh.position.y = targetMesh.position.y + 0.5; // Sit on top of target
 
-            eventBus.emit(EVENTS.PUZZLE_BLOCK_PLACED, { blockId: this.mesh.name });
+                // Visual feedback
+                this.mesh.material.emissiveColor = this.#getColorValue(this.color).scale(0.8);
+                this.mesh.metadata.interactable = false;
+
+                eventBus.emit(EVENTS.PUZZLE_BLOCK_PLACED, { blockId: this.mesh.name });
+            }
         }
     }
 
