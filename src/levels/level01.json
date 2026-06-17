@@ -1,0 +1,24 @@
+{
+  "id": "level01",
+  "name": "La Cripta Silenziosa",
+  "roomSize": { "width": 20, "height": 5, "depth": 20 },
+  "spawnPoint": { "x": 0, "y": 0, "z": -8 },
+  "exitPoint": { "x": 0, "y": 0, "z": 9.5 },
+  "blocks": [
+    { "id": "block_r1", "color": "red",   "position": { "x": -3, "y": 0.5, "z": 0 }, "targetId": "target_r1" },
+    { "id": "block_b1", "color": "blue",  "position": { "x":  3, "y": 0.5, "z": 0 }, "targetId": "target_b1" }
+  ],
+  "targets": [
+    { "id": "target_r1", "color": "red",  "position": { "x": -3, "y": 0, "z": 6 } },
+    { "id": "target_b1", "color": "blue", "position": { "x":  3, "y": 0, "z": 6 } }
+  ],
+  "crystals": [
+    { "id": "cryst_1", "position": { "x":  2, "y": 0.5, "z": -4 } },
+    { "id": "cryst_2", "position": { "x": -2, "y": 0.5, "z":  2 } },
+    { "id": "cryst_3", "position": { "x":  0, "y": 0.5, "z":  4 } }
+  ],
+  "lights": [
+    { "type": "point", "position": { "x": -6, "y": 3, "z": -6 }, "intensity": 0.8 },
+    { "type": "point", "position": { "x":  6, "y": 3, "z":  6 }, "intensity": 0.8 }
+  ]
+}

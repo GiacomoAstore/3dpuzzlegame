@@ -1,0 +1,15 @@
+{
+  "name": "echovault",
+  "version": "1.0.0",
+  "description": "EchoVault - Un gioco 3D di puzzle ed esplorazione in Babylon.js",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serve": "^14.2.6"
+  }
+}
