@@ -1,0 +1,26 @@
+{
+  "id": "level02",
+  "name": "Il Corridoio degli Echi",
+  "roomSize": { "width": 30, "height": 6, "depth": 30 },
+  "spawnPoint": { "x": 0, "y": 0, "z": -12 },
+  "exitPoint": { "x": 0, "y": 0, "z": 14.5 },
+  "blocks": [
+    { "id": "block_r1", "color": "red",   "position": { "x": -5, "y": 0.5, "z": -5 }, "targetId": "target_r1" },
+    { "id": "block_g1", "color": "green", "position": { "x":  0, "y": 0.5, "z": 0 }, "targetId": "target_g1" },
+    { "id": "block_b1", "color": "blue",  "position": { "x":  5, "y": 0.5, "z": -5 }, "targetId": "target_b1" }
+  ],
+  "targets": [
+    { "id": "target_r1", "color": "red",  "position": { "x": -8, "y": 0, "z": 8 } },
+    { "id": "target_g1", "color": "green","position": { "x":  0, "y": 0, "z": 10 } },
+    { "id": "target_b1", "color": "blue", "position": { "x":  8, "y": 0, "z": 8 } }
+  ],
+  "crystals": [
+    { "id": "cryst_1", "position": { "x": -10, "y": 0.5, "z": -10 } },
+    { "id": "cryst_2", "position": { "x":  10, "y": 0.5, "z": -10 } },
+    { "id": "cryst_3", "position": { "x": -10, "y": 0.5, "z":  10 } },
+    { "id": "cryst_4", "position": { "x":  10, "y": 0.5, "z":  10 } }
+  ],
+  "lights": [
+    { "type": "point", "position": { "x": 0, "y": 4, "z": 0 }, "intensity": 1.0 }
+  ]
+}

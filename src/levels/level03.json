@@ -1,0 +1,33 @@
+{
+  "id": "level03",
+  "name": "Il Santuario Interiore",
+  "roomSize": { "width": 40, "height": 8, "depth": 40 },
+  "spawnPoint": { "x": 0, "y": 0, "z": -15 },
+  "exitPoint": { "x": 0, "y": 0, "z": 19.5 },
+  "blocks": [
+    { "id": "block_r1", "color": "red",   "position": { "x": -10, "y": 0.5, "z": -5 }, "targetId": "target_r1" },
+    { "id": "block_g1", "color": "green", "position": { "x":  -5, "y": 0.5, "z": 0 }, "targetId": "target_g1" },
+    { "id": "block_b1", "color": "blue",  "position": { "x":  5, "y": 0.5, "z": 0 }, "targetId": "target_b1" },
+    { "id": "block_r2", "color": "red",   "position": { "x":  10, "y": 0.5, "z": -5 }, "targetId": "target_r2" }
+  ],
+  "targets": [
+    { "id": "target_r1", "color": "red",  "position": { "x": -15, "y": 0, "z": 10 } },
+    { "id": "target_g1", "color": "green","position": { "x":  -5, "y": 0, "z": 15 } },
+    { "id": "target_b1", "color": "blue", "position": { "x":   5, "y": 0, "z": 15 } },
+    { "id": "target_r2", "color": "red",  "position": { "x":  15, "y": 0, "z": 10 } }
+  ],
+  "crystals": [
+    { "id": "cryst_1", "position": { "x": -15, "y": 0.5, "z": -15 } },
+    { "id": "cryst_2", "position": { "x":  15, "y": 0.5, "z": -15 } },
+    { "id": "cryst_3", "position": { "x":   0, "y": 0.5, "z":   0 } },
+    { "id": "cryst_4", "position": { "x": -15, "y": 0.5, "z":  15 } },
+    { "id": "cryst_5", "position": { "x":  15, "y": 0.5, "z":  15 } }
+  ],
+  "lights": [
+    { "type": "point", "position": { "x": -10, "y": 5, "z": -10 }, "intensity": 0.7 },
+    { "type": "point", "position": { "x":  10, "y": 5, "z": -10 }, "intensity": 0.7 },
+    { "type": "point", "position": { "x": -10, "y": 5, "z":  10 }, "intensity": 0.7 },
+    { "type": "point", "position": { "x":  10, "y": 5, "z":  10 }, "intensity": 0.7 },
+    { "type": "point", "position": { "x":   0, "y": 6, "z":   0 }, "intensity": 1.2 }
+  ]
+}

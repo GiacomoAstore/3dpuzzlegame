@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVault</title>
+
+    <!-- Google Fonts for UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            user-select: none;
+        }
+
+        #renderCanvas {
+            width: 100vw;
+            height: 100vh;
+            touch-action: none;
+            display: block;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* Let clicks pass through to canvas */
+            z-index: 10;
+        }
+
+        /* Basic Crosshair built with CSS */
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            display: none; /* Shown during gameplay */
+        }
+        #crosshair::before, #crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+        }
+        #crosshair::before {
+            top: 9px;
+            left: 0;
+            width: 20px;
+            height: 2px;
+        }
+        #crosshair::after {
+            top: 0;
+            left: 9px;
+            width: 2px;
+            height: 20px;
+        }
+    </style>
+
+    <!-- Import Map for Babylon.js (ES Modules via CDN) -->
+    <script type="importmap">
+    {
+      "imports": {
+        "@babylonjs/core": "https://cdn.jsdelivr.net/npm/@babylonjs/core@6.48.1/index.js",
+        "@babylonjs/core/": "https://cdn.jsdelivr.net/npm/@babylonjs/core@6.48.1/",
+        "@babylonjs/loaders": "https://cdn.jsdelivr.net/npm/@babylonjs/loaders@6.48.1/index.js",
+        "@babylonjs/loaders/": "https://cdn.jsdelivr.net/npm/@babylonjs/loaders@6.48.1/"
+      }
+    }
+    </script>
+</head>
+<body>
+    <canvas id="renderCanvas" touch-action="none"></canvas>
+    <div id="ui-layer">
+        <div id="crosshair"></div>
+        <div id="hud-container"></div>
+        <div id="menu-container"></div>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>
