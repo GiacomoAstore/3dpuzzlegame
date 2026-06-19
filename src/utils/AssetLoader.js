@@ -75,10 +75,10 @@ export class AssetLoader {
                 this.#sounds.get(id).dispose();
                 this.#sounds.delete(id);
             }
-            const sound = new Sound(id, url, scene, () => {
+            const sound = new Sound(id, url, scene, function() {
                 this.#sounds.set(id, sound);
                 resolve(sound);
-            }, { loop: false, autoplay: false }, (error) => {
+            }.bind(this), { loop: false, autoplay: false }, (error) => {
                 console.warn(`Could not load sound ${url}`, error);
                 // Resolve anyway so the game doesn't halt on audio failure
                 resolve(null);

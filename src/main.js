@@ -67,6 +67,7 @@ class Game {
         this.#eventBus.on(EVENTS.PUZZLE_BLOCK_PLACED, () => this.#audioManager.playSound('BLOCK_TARGET'));
         this.#eventBus.on(EVENTS.CRYSTAL_COLLECTED, () => this.#audioManager.playSound('CRYSTAL_COLLECT'));
         this.#eventBus.on(EVENTS.DOOR_OPEN, () => this.#audioManager.playSound('DOOR_OPEN'));
+        this.#eventBus.on(EVENTS.PLAYER_MOVE, () => this.#audioManager.playSound('FOOTSTEP'));
 
         this.#eventBus.on(EVENTS.LEVEL_COMPLETE, () => {
             this.#currentLevelIndex++;
