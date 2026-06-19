@@ -39,10 +39,10 @@ export const TEXTURE_URLS = {
 };
 
 export const AUDIO_URLS = {
-    FOOTSTEP: 'https://kenney.nl/assets/impact-sounds/footstep_stone_001.ogg', // placeholder URL
-    BLOCK_TARGET: 'https://freesound.org/data/previews/270/270402_5123851-lq.mp3', // placeholder
-    CRYSTAL_COLLECT: 'https://freesound.org/data/previews/146/146727_2615119-lq.mp3', // placeholder
-    DOOR_OPEN: 'https://freesound.org/data/previews/198/198961_2092147-lq.mp3' // placeholder
+    FOOTSTEP: 'https://playground.babylonjs.com/sounds/violons11.wav',
+    BLOCK_TARGET: 'https://playground.babylonjs.com/sounds/bounce.wav',
+    CRYSTAL_COLLECT: 'https://playground.babylonjs.com/sounds/cellolong.wav',
+    DOOR_OPEN: 'https://playground.babylonjs.com/sounds/gunshot.wav'
 };
 
 export const PHYSICS_GROUPS = {

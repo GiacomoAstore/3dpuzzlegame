@@ -54,6 +54,7 @@ export class Player {
         this.#tpsCamera = new ArcRotateCamera("tpsCamera", -Math.PI / 2, Math.PI / 2.5, 5, this.#mesh.position, this.#scene);
         this.#tpsCamera.setTarget(this.#mesh);
         this.#tpsCamera.checkCollisions = true;
+        this.#tpsCamera.collisionRadius = new Vector3(0.5, 0.5, 0.5);
         this.#tpsCamera.minZ = 0.1;
         this.#tpsCamera.maxZ = 1000;
         this.#fpsCamera.maxZ = 1000;

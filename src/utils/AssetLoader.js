@@ -70,13 +70,19 @@ export class AssetLoader {
     async loadSound(id, url, scene) {
         return new Promise((resolve, reject) => {
             if (this.#sounds.has(id)) {
-                resolve(this.#sounds.get(id));
-                return;
+                // Sound already exists but we might need to recreate it if it belongs to an old disposed scene.
+                // We'll dispose the old one and recreate it to ensure it's bound to the new scene.
+                this.#sounds.get(id).dispose();
+                this.#sounds.delete(id);
             }
             const sound = new Sound(id, url, scene, () => {
                 this.#sounds.set(id, sound);
                 resolve(sound);
-            }, { loop: false, autoplay: false });
+            }, { loop: false, autoplay: false }, (error) => {
+                console.warn(`Could not load sound ${url}`, error);
+                // Resolve anyway so the game doesn't halt on audio failure
+                resolve(null);
+            });
         });
     }
 
@@ -87,6 +93,15 @@ export class AssetLoader {
      */
     getTexture(id) {
         return this.#textures.get(id) || null;
+    }
+
+    /**
+     * Retrieves a loaded sound.
+     * @param {string} id
+     * @returns {Sound|null}
+     */
+    getSound(id) {
+        return this.#sounds.get(id) || null;
     }
 
     /**
