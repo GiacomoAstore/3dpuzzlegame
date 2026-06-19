@@ -8,8 +8,5 @@
     "start": "npx serve ."
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "serve": "^14.2.6"
-  }
+  "license": "ISC"
 }

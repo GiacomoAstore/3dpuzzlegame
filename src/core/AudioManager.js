@@ -17,12 +17,30 @@ export class AudioManager {
     }
 
     /**
+     * Init sounds for a given scene.
+     * @param {import('@babylonjs/core').Scene} scene
+     * @param {object} urls Map of ID to URL
+     */
+    async initSounds(scene, urls) {
+        const promises = [];
+        for (const [id, url] of Object.entries(urls)) {
+            promises.push(this.#assetLoader.loadSound(id, url, scene));
+        }
+        await Promise.all(promises);
+    }
+
+    /**
      * Plays a sound by its ID.
      * @param {string} soundId
      */
     playSound(soundId) {
-        // Implementation will depend on AssetLoader saving sounds by ID
-        // Simplified for this scope, you'd retrieve and play the Sound object
-        console.log(`[Audio] Playing ${soundId}`);
+        // We bypass the AssetLoader getSound here for simplicity and assume it's attached via global reference or custom HTMLAudioElement
+        // However, if we loaded it via Babylon Sound in AssetLoader:
+        const sound = this.#assetLoader.getSound ? this.#assetLoader.getSound(soundId) : null;
+        if (sound) {
+            sound.play();
+        } else {
+            console.log(`[Audio] Playing (simulated or not loaded): ${soundId}`);
+        }
     }
 }

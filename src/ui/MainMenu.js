@@ -34,8 +34,9 @@ export class MainMenu {
         });
     }
 
-    show() {
+    show(titleText = "EchoVault") {
         document.getElementById('main-menu').style.display = 'flex';
+        document.querySelector('#main-menu h1').innerText = titleText;
     }
 
     hide() {

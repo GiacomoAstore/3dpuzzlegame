@@ -7,12 +7,13 @@ import { Engine, Color3 } from '@babylonjs/core';
 import { EventBus } from './core/EventBus.js';
 import { InputManager } from './core/InputManager.js';
 import { SceneManager } from './core/SceneManager.js';
+import { AudioManager } from './core/AudioManager.js';
 import { AssetLoader } from './utils/AssetLoader.js';
 import { LevelLoader } from './levels/LevelLoader.js';
 import { HUD } from './ui/HUD.js';
 import { MainMenu } from './ui/MainMenu.js';
 import { PauseMenu } from './ui/PauseMenu.js';
-import { GAME_STATES, EVENTS } from './utils/Constants.js';
+import { GAME_STATES, EVENTS, AUDIO_URLS } from './utils/Constants.js';
 
 class Game {
     /** @type {Engine} */ #engine;
@@ -20,6 +21,7 @@ class Game {
     /** @type {InputManager} */ #inputManager;
     /** @type {EventBus} */ #eventBus;
     /** @type {AssetLoader} */ #assetLoader;
+    /** @type {AudioManager} */ #audioManager;
     /** @type {LevelLoader} */ #levelLoader;
     /** @type {HUD} */ #hud;
     /** @type {MainMenu} */ #mainMenu;
@@ -36,6 +38,7 @@ class Game {
         this.#inputManager = new InputManager(canvas);
         this.#sceneManager = new SceneManager(this.#engine);
         this.#assetLoader = new AssetLoader();
+        this.#audioManager = new AudioManager(this.#assetLoader);
 
         // UI
         this.#hud = new HUD(this.#eventBus);
@@ -61,13 +64,17 @@ class Game {
     }
 
     #setupEvents() {
+        this.#eventBus.on(EVENTS.PUZZLE_BLOCK_PLACED, () => this.#audioManager.playSound('BLOCK_TARGET'));
+        this.#eventBus.on(EVENTS.CRYSTAL_COLLECTED, () => this.#audioManager.playSound('CRYSTAL_COLLECT'));
+        this.#eventBus.on(EVENTS.DOOR_OPEN, () => this.#audioManager.playSound('DOOR_OPEN'));
+
         this.#eventBus.on(EVENTS.LEVEL_COMPLETE, () => {
             this.#currentLevelIndex++;
             if (this.#currentLevelIndex > this.#levels.length) {
                 // Game complete
                 this.#currentState = GAME_STATES.GAME_OVER;
                 console.log("Game Complete!");
-                this.#mainMenu.show();
+                this.#mainMenu.show("Hai Vinto!");
                 this.#hud.showCrosshair(false);
                 document.exitPointerLock();
             } else {
@@ -77,8 +84,10 @@ class Game {
     }
 
     async init() {
-        this.#sceneManager.createScene(); // Create initial empty scene
-        this.#levelLoader = new LevelLoader(this.#sceneManager.scene, this.#eventBus, this.#inputManager);
+        const scene = this.#sceneManager.createScene(); // Create initial empty scene
+        await this.#audioManager.initSounds(scene, AUDIO_URLS);
+
+        this.#levelLoader = new LevelLoader(scene, this.#eventBus, this.#inputManager);
         this.#currentState = GAME_STATES.MENU;
         this.#mainMenu.show();
 
@@ -121,13 +130,16 @@ class Game {
             this.#levelLoader.dispose();
         }
 
-        this.#sceneManager.createScene(); // Reset scene
+        const scene = this.#sceneManager.createScene(); // Reset scene
         // Add fog
-        this.#sceneManager.scene.fogMode = 2; // EXP2
-        this.#sceneManager.scene.fogColor = new Color3(0, 0, 0);
-        this.#sceneManager.scene.fogDensity = 0.04;
+        scene.fogMode = 2; // EXP2
+        scene.fogColor = new Color3(0, 0, 0);
+        scene.fogDensity = 0.04;
 
-        this.#levelLoader = new LevelLoader(this.#sceneManager.scene, this.#eventBus, this.#inputManager);
+        // Re-init audio on the new scene
+        await this.#audioManager.initSounds(scene, AUDIO_URLS);
+
+        this.#levelLoader = new LevelLoader(scene, this.#eventBus, this.#inputManager);
         await this.#levelLoader.loadLevel(this.#levels[index - 1]);
         this.#currentState = GAME_STATES.PLAYING;
     }

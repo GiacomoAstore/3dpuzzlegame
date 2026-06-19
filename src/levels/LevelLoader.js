@@ -36,6 +36,7 @@ export class LevelLoader {
     #setupEventListeners() {
         this.onBlockPlaced = () => {
             this.blocksPlaced++;
+            this.#eventBus.emit('HUD_UPDATE_BLOCKS', { placed: this.blocksPlaced, total: this.totalBlocks });
             this.#checkLevelCompletion();
         };
 
@@ -100,6 +101,7 @@ export class LevelLoader {
 
             // Initial HUD update
             this.#eventBus.emit('HUD_UPDATE_CRYSTALS', { collected: 0, total: this.totalCrystals });
+            this.#eventBus.emit('HUD_UPDATE_BLOCKS', { placed: 0, total: this.totalBlocks });
 
             return this.player;
         } catch (err) {
