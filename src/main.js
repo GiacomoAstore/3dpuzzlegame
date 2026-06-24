@@ -70,6 +70,9 @@ class Game {
         this.#eventBus.on(EVENTS.PLAYER_MOVE, () => this.#audioManager.playSound('FOOTSTEP'));
 
         this.#eventBus.on(EVENTS.LEVEL_COMPLETE, () => {
+            if (this.#currentState === GAME_STATES.LOADING) return; // Prevent double trigger
+            this.#currentState = GAME_STATES.LOADING;
+
             this.#currentLevelIndex++;
             if (this.#currentLevelIndex > this.#levels.length) {
                 // Game complete
@@ -79,7 +82,9 @@ class Game {
                 this.#hud.showCrosshair(false);
                 document.exitPointerLock();
             } else {
-                this.loadLevel(this.#currentLevelIndex);
+                setTimeout(() => {
+                    this.loadLevel(this.#currentLevelIndex);
+                }, 100); // Small delay to allow Physics/ActionManager to clean up
             }
         });
     }
@@ -108,6 +113,7 @@ class Game {
         this.#currentState = GAME_STATES.PLAYING;
         this.#hud.showCrosshair(true);
         this.#engine.getRenderingCanvas().requestPointerLock();
+        this.#audioManager.playSound('BGM', true);
     }
 
     pauseGame() {

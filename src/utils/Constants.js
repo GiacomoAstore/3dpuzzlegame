@@ -43,7 +43,8 @@ export const AUDIO_URLS = {
     FOOTSTEP: 'https://playground.babylonjs.com/sounds/violons11.wav',
     BLOCK_TARGET: 'https://playground.babylonjs.com/sounds/bounce.wav',
     CRYSTAL_COLLECT: 'https://playground.babylonjs.com/sounds/cellolong.wav',
-    DOOR_OPEN: 'https://playground.babylonjs.com/sounds/gunshot.wav'
+    DOOR_OPEN: 'https://playground.babylonjs.com/sounds/gunshot.wav',
+    BGM: 'https://playground.babylonjs.com/sounds/cellolong.wav'
 };
 
 export const PHYSICS_GROUPS = {

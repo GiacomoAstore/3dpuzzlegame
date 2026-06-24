@@ -182,4 +182,8 @@ export class Player {
         if (this.#tpsCamera) this.#tpsCamera.dispose();
         if (this.#mesh) this.#mesh.dispose();
     }
+
+    get mesh() {
+        return this.#mesh;
+    }
 }

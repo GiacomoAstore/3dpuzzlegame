@@ -3,7 +3,7 @@
  * @description Loads level data and constructs the scene.
  */
 
-import { MeshBuilder, StandardMaterial, Color3, Vector3, PointLight, Texture } from '@babylonjs/core';
+import { MeshBuilder, StandardMaterial, Color3, Vector3, PointLight, Texture, ShadowGenerator } from '@babylonjs/core';
 import { Player } from '../entities/Player.js';
 import { PuzzleBlock } from '../entities/PuzzleBlock.js';
 import { Collectible } from '../entities/Collectible.js';
@@ -76,6 +76,9 @@ export class LevelLoader {
 
             // Instantiate Player first so other entities can reference it
             this.player = new Player(this.#scene, data.spawnPoint, this.#inputManager, this.#eventBus);
+            if (this.#scene.shadowGenerators) {
+                this.#scene.shadowGenerators.forEach(sg => sg.addShadowCaster(this.player.mesh, true));
+            }
 
             this.#setupTargets(data.targets);
             this.#setupBlocks(data.blocks);
@@ -116,6 +119,7 @@ export class LevelLoader {
         floorMat.diffuseTexture = new Texture(TEXTURE_URLS.FLOOR, this.#scene);
         floor.material = floorMat;
         floor.checkCollisions = true;
+        floor.receiveShadows = true;
         floor.freezeWorldMatrix(); // Optimization: make static
         this.entities.push({ dispose: () => floor.dispose() }); // Simple wrapper for disposal
 
@@ -130,18 +134,27 @@ export class LevelLoader {
         const wallMat = new StandardMaterial("wallMat", this.#scene);
         wallMat.diffuseTexture = new Texture(TEXTURE_URLS.WALL, this.#scene);
         room.material = wallMat;
+        room.receiveShadows = true;
         room.freezeWorldMatrix(); // Optimization: make static
         this.entities.push({ dispose: () => room.dispose() });
     }
 
     #setupLighting(lightsData) {
         if (!lightsData) return;
+        this.#scene.shadowGenerators = [];
         lightsData.forEach((l, i) => {
             if (l.type === "point") {
                 const light = new PointLight(`light_${i}`, new Vector3(l.position.x, l.position.y, l.position.z), this.#scene);
                 light.intensity = l.intensity;
                 light.diffuse = new Color3(1, 0.8, 0.5); // Orange/yellow torch color
-                this.entities.push({ dispose: () => light.dispose() });
+                
+                // Ombre
+                const shadowGenerator = new ShadowGenerator(1024, light);
+                shadowGenerator.useBlurExponentialShadowMap = true;
+                shadowGenerator.blurKernel = 32;
+                this.#scene.shadowGenerators.push(shadowGenerator);
+
+                this.entities.push({ dispose: () => { light.dispose(); shadowGenerator.dispose(); } });
             }
         });
     }
@@ -165,6 +178,9 @@ export class LevelLoader {
 
         blocksData.forEach(b => {
             const block = new PuzzleBlock(this.#scene, this.#eventBus, b.id, b.color, b.position, b.targetId);
+            if (this.#scene.shadowGenerators) {
+                this.#scene.shadowGenerators.forEach(sg => sg.addShadowCaster(block.mesh, true));
+            }
             this.entities.push(block);
         });
     }
@@ -179,6 +195,9 @@ export class LevelLoader {
 
         crystalsData.forEach(c => {
             const crystal = new Collectible(this.#scene, this.#eventBus, c.id, c.position, playerMesh);
+            if (this.#scene.shadowGenerators) {
+                this.#scene.shadowGenerators.forEach(sg => sg.addShadowCaster(crystal.mesh, true));
+            }
             this.entities.push(crystal);
         });
     }

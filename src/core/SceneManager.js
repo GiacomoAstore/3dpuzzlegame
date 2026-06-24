@@ -3,7 +3,7 @@
  * @description Manages Babylon.js scenes.
  */
 
-import { Scene, Color3, Color4, HemisphericLight, Vector3, FreeCamera, GlowLayer } from '@babylonjs/core';
+import { Scene, Color3, Color4, HemisphericLight, Vector3, FreeCamera, GlowLayer, DefaultRenderingPipeline } from '@babylonjs/core';
 
 export class SceneManager {
     /** @type {import('@babylonjs/core').Engine} */
@@ -50,6 +50,21 @@ export class SceneManager {
         // Add GlowLayer for visual feedback on active elements
         const glowLayer = new GlowLayer("glow", scene);
         glowLayer.intensity = 0.4;
+
+        // Post Processing Pipeline
+        const pipeline = new DefaultRenderingPipeline(
+            "defaultPipeline", // The name of the pipeline
+            true, // Do you want the pipeline to use HDR texture?
+            scene // The scene instance
+        );
+        pipeline.samples = 4; // MSAA
+        pipeline.fxaaEnabled = true; // FXAA
+        pipeline.bloomEnabled = true;
+        pipeline.bloomThreshold = 0.8;
+        pipeline.bloomWeight = 0.3;
+        pipeline.imageProcessingEnabled = true;
+        pipeline.imageProcessing.contrast = 1.2;
+        pipeline.imageProcessing.exposure = 1.1;
 
         this.#currentScene = scene;
         return scene;

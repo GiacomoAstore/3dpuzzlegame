@@ -32,12 +32,15 @@ export class AudioManager {
     /**
      * Plays a sound by its ID.
      * @param {string} soundId
+     * @param {boolean} loop
      */
-    playSound(soundId) {
-        // We bypass the AssetLoader getSound here for simplicity and assume it's attached via global reference or custom HTMLAudioElement
-        // However, if we loaded it via Babylon Sound in AssetLoader:
+    playSound(soundId, loop = false) {
         const sound = this.#assetLoader.getSound ? this.#assetLoader.getSound(soundId) : null;
         if (sound) {
+            sound.loop = loop;
+            if (soundId === 'BGM') {
+                sound.setVolume(0.3); // Lower volume for background music
+            }
             sound.play();
         } else {
             console.log(`[Audio] Playing (simulated or not loaded): ${soundId}`);
