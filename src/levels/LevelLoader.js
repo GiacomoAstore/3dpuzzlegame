@@ -97,7 +97,7 @@ export class LevelLoader {
             }
 
             // Freeze static meshes for performance
-            this.#scene.freezeActiveMeshes();
+            // this.#scene.freezeActiveMeshes();
 
             // Initial HUD update
             this.#eventBus.emit('HUD_UPDATE_CRYSTALS', { collected: 0, total: this.totalCrystals });
@@ -116,12 +116,13 @@ export class LevelLoader {
         floorMat.diffuseTexture = new Texture(TEXTURE_URLS.FLOOR, this.#scene);
         floor.material = floorMat;
         floor.checkCollisions = true;
+        floor.freezeWorldMatrix(); // Optimization: make static
         this.entities.push({ dispose: () => floor.dispose() }); // Simple wrapper for disposal
 
         // Add walls (simplified box with inverted normals or separate planes)
         // For simplicity, a large box
         const room = MeshBuilder.CreateBox("room", { width: size.width, height: size.height, depth: size.depth }, this.#scene);
-        room.position.y = size.height / 2;
+        room.position.y = (size.height / 2) - 0.01; // offset slightly to prevent Z-fighting with floor
         room.flipFaces(true); // Inside out
         room.checkCollisions = true;
         room.isPickable = false;
@@ -129,6 +130,7 @@ export class LevelLoader {
         const wallMat = new StandardMaterial("wallMat", this.#scene);
         wallMat.diffuseTexture = new Texture(TEXTURE_URLS.WALL, this.#scene);
         room.material = wallMat;
+        room.freezeWorldMatrix(); // Optimization: make static
         this.entities.push({ dispose: () => room.dispose() });
     }
 
@@ -182,7 +184,7 @@ export class LevelLoader {
     }
 
     #clearLevel() {
-        this.#scene.unfreezeActiveMeshes();
+        // this.#scene.unfreezeActiveMeshes();
         this.entities.forEach(e => e.dispose());
         this.entities = [];
         if (this.player) {

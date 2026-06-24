@@ -15,6 +15,7 @@ export class Player {
     /** @type {ArcRotateCamera} */ #tpsCamera;
     /** @type {boolean} */ #isFirstPerson = true;
     /** @type {import('@babylonjs/core').AbstractMesh|null} */ #currentInteractable = null;
+    /** @type {number} */ #footstepTimer = 0;
 
     constructor(scene, spawnPoint, inputManager, eventBus) {
         this.#scene = scene;
@@ -137,6 +138,16 @@ export class Player {
         velocity.y = -9.81 * deltaTime; // Simple gravity
 
         this.#mesh.moveWithCollisions(velocity);
+
+        if (moveDirection.length() > 0) {
+            this.#footstepTimer += deltaTime;
+            if (this.#footstepTimer > 0.5) { // play sound roughly every 0.5s of movement
+                this.#eventBus.emit(EVENTS.PLAYER_MOVE);
+                this.#footstepTimer = 0;
+            }
+        } else {
+            this.#footstepTimer = 0;
+        }
 
         this.#checkInteractions();
     }
